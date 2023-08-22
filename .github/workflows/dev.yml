@@ -1,0 +1,34 @@
+name: Deploy to GCP
+
+on:
+  push:
+    branches:
+      - main 
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    - name: Create .env File
+      run: |
+        echo "OPENAI_KEY=${{ secrets.OPENAI_KEY }}" > .env
+        echo "SECRET_KEY_FRONT=${{ secrets.SECRET_KEY_FRONT }}" > .env
+        echo "ALGORITHM=${{ secrets.ALGORITHM }}" > .env
+        echo "ACCESS_TOKEN_EXPIRE_MINUTES=${{ secrets.ACCESS_TOKEN_EXPIRE_MINUTES }}" > .env
+        # Add more secrets as needed
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.11'
+    
+    - name: Deploy to GCP
+      env:
+        PROJECT_ID: {{projectId}} 
+        SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SA_KEY }}
+      run: |
+        gcloud auth activate-service-account --key-file <(echo $SERVICE_ACCOUNT_KEY)
+        gcloud config set project $PROJECT_ID
+        gcloud app deploy devapp.yaml
