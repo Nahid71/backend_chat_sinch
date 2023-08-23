@@ -26,7 +26,7 @@ jobs:
     
     - name: Deploy to GCP
       env:
-        PROJECT_ID: {{projectId}} 
+        PROJECT_ID: ${{ secrets.PROJECT_ID }} 
         SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SA_KEY }}
       run: |
         gcloud auth activate-service-account --key-file <(echo $SERVICE_ACCOUNT_KEY)
