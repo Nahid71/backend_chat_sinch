@@ -1,6 +1,30 @@
 import requests
 from config import Settings
 
+def send_message(app_id, contact_id, message_body):
+    region = "us"
+    url = "https://" + region + ".conversation.api.sinch.com/v1/projects/" + Settings.sinch_project_id + "/messages:send"
+
+    payload = {
+    "app_id": "{app_id}",
+    "recipient": {
+        "contact_id": "{contact_id}"
+    },
+    "message": {
+        "text_message": {
+        "text": message_body
+        }
+    }
+    }
+
+    headers = {"Content-Type": "application/json"}
+
+    response = requests.post(url, json=payload, headers=headers, auth=(Settings.sinch_key,Settings.sinch_secret))
+    if response.status_code == 200:
+        return response.json()
+    else:
+        return "Something is wrong"
+
 def create_conversation(app_id, contact_id):
     region = "us"
     url = "https://" + region + ".conversation.api.sinch.com/v1/projects/" + Settings.sinch_project_id + "/conversations"
@@ -9,7 +33,6 @@ def create_conversation(app_id, contact_id):
     "active_channel": "WHATSAPP",
     "app_id": "{app_id}",
     "contact_id": "{contact_id}",
-    "id": "string",
     "metadata": "string",
     "metadata_json": {}
     }
