@@ -30,6 +30,9 @@ class PhoneListBase(BaseModel):
     type: str
     phone_number: str
 
+class PhoneListCreate(PhoneListBase):
+    pass
+
 class MsgServiceBase(BaseModel):
     msg_service_name : str
 
