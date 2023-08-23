@@ -50,3 +50,12 @@ async def init_chats(
     )
 
     return {"message": "ok"}
+
+
+# api for sead a message
+# method for a create a conversation 
+# api get a conversation and it's messages
+# delete a conversation
+
+
+# weebhook
