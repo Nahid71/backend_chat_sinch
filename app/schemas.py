@@ -1,8 +1,7 @@
-from pydantic import BaseModel, EmailStr, Field, validator, json
-from pydantic.types import conint
+from pydantic import BaseModel, EmailStr, Field
 from bson.objectid import ObjectId 
 from datetime import datetime
-from typing import Optional, Dict
+from typing import  Dict, List
 
 
 class TextMessage(BaseModel):
@@ -42,25 +41,29 @@ class InboundMessageData(BaseModel):
     correlation_id: str
 
 
-class ObjectIdStr(str):
+class PydanticObjectId(ObjectId):
     @classmethod
     def __get_validators__(cls):
         yield cls.validate
 
     @classmethod
-    def validate(cls, v):
-        if ObjectId.is_valid(v):
-            return str(v)
-        raise ValueError("Invalid ObjectId")
+    def validate(cls, v: ObjectId) -> str:
+        if not isinstance(v, ObjectId):
+            raise TypeError('ObjectId required')
+        return str(v)
 
 #need add ProfileName
 class ServiceBase(BaseModel):
     service_name : str
 
+class ServiceItem(BaseModel):
+    key: str
+    value: str
+
 class ServiceCreate(BaseModel):
     id : PydanticObjectId = Field(..., alias='_id')
     entity : PydanticObjectId
-    services : list[Dict[str,str]]
+    services : List[ServiceItem]
 
 class PhoneListBase(BaseModel):
     type: str
@@ -71,21 +74,7 @@ class PhoneListCreate(PhoneListBase):
 
 class MsgServiceBase(BaseModel):
     msg_service_name : str
-
-class MsgServiceCreate(BaseModel):
-    id : PydanticObjectId = Field(..., alias='_id')
-    entity : PydanticObjectId
-    msgServices : list[Dict[str,str]]
  
 class ChatHumanOut(BaseModel):
     human_msg : str
 
-class UserCreate(BaseModel):
-    email: EmailStr
-    password: str
-    # entityId: str
-
-
-class UserLogin(BaseModel):
-    email: EmailStr
-    password: str

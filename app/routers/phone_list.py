@@ -16,8 +16,7 @@ router = APIRouter(
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.PhoneListCreate)
 async def add_phone(
     mongodb: MongoClient = Depends(get_mongodb),
-    current_user: dict = Depends(oauth2.get_current_user),
-    sinch_client: Client = Depends(get_sinch_client) 
+    current_user: dict = Depends(oauth2.get_current_user)
     ):
     url = "https://numbers.api.sinch.com/v1/projects/" + Settings.sinch_project_id + "/availableNumbers"
 
