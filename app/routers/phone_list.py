@@ -1,5 +1,4 @@
 from fastapi import FastAPI, status, HTTPException, Depends, APIRouter
-from ..sinch import get_sinch_client
 from .. import schemas, oauth2
 from ..database import get_mongodb
 import requests
