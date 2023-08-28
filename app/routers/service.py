@@ -18,7 +18,7 @@ def create_service(
     mongodb: MongoClient = Depends(get_mongodb),
     current_user: dict = Depends(oauth2.get_current_user)
 ):
-    test_db = mongodb.test
+    test_db = mongodb.local-dev-db
     preference_collection = test_db.preferences
     region = "us"
     
@@ -37,9 +37,11 @@ def create_service(
     headers = {"Content-Type": "application/json"}
     response = requests.post(url, json=payload, headers=headers, auth=(Settings.sinch_key,Settings.sinch_secret))
     app_data = response.json()
-    updated_pref = preference_collection.find_one_and_update(
-        {"entity": current_user["entity"]},
-        {"$addToSet": {"services": app_data}},
+    app_id = app_data.get("id")
+    users_collection = mongodb.users 
+    updated_user = users_collection.find_one_and_update(
+        {"_id": ObjectId(current_user["_id"])},  
+        {"$set": {"app_id": app_id}},
         return_document=True,
     )
 
