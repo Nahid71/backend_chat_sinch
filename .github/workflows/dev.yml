@@ -1,9 +1,9 @@
 name: Deploy to GCP
 
 on:
-  push:
+  pull_request:
     branches:
-      - main 
+      - main
 
 jobs:
   deploy:
@@ -18,17 +18,10 @@ jobs:
         echo "SECRET_KEY_FRONT=${{ secrets.SECRET_KEY_FRONT }}" > .env
         echo "ALGORITHM=${{ secrets.ALGORITHM }}" > .env
         echo "ACCESS_TOKEN_EXPIRE_MINUTES=${{ secrets.ACCESS_TOKEN_EXPIRE_MINUTES }}" > .env
+        cat .env
         # Add more secrets as needed
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
         python-version: '3.11'
     
-    - name: Deploy to GCP
-      env:
-        PROJECT_ID: ${{ secrets.PROJECT_ID }} 
-        SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SA_KEY }}
-      run: |
-        gcloud auth activate-service-account --key-file <(echo $SERVICE_ACCOUNT_KEY)
-        gcloud config set project $PROJECT_ID
-        gcloud app deploy devapp.yaml
